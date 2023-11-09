@@ -41,6 +41,8 @@ p{
   }
 
   .button-container{
+    display: flex;
+    flex-direction: column;
     clear: left;
     float: left;
     margin-left: 12%;

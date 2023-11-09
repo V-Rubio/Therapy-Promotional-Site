@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATABASE_FILE = path.join(__dirname + "./files/data.txt");
+// make sure that this directory is leading to the right place, otherwise buttons are not going to work
+
+const DATABASE_FILE = path.join(__dirname + "/../server/files/data.txt");
 
 var services = function(app) {
     app.post('/write-record', function(req, res){
@@ -30,10 +32,12 @@ var services = function(app) {
 
                     libraryData.push(bookData);
 
+                    console.log(JSON.stringify(libraryData));
                     fs.writeFile(DATABASE_FILE, JSON.stringify(libraryData), function (err, res){
                         if(err){
                             res.send(JSON.stringify({msg:err}));
                         } else {
+                            console.log("Will I cause Issues: services.js:41")
                             res.send(JSON.stringify({msg: "SUCCESS"}));
                         }
                     });
@@ -51,6 +55,23 @@ var services = function(app) {
                     res.send(JSON.stringify({msg: "SUCCESS"}));
                 }
             })
+        }
+    });
+
+    app.get("/get-records", function(req, res){
+        if(fs.existsSync(DATABASE_FILE)){
+            fs.readFile(DATABASE_FILE, "utf-8", function(err,data){
+                if(err){
+                    res.send(JSON.stringify({msg: err}));
+                } else {
+                    var libraryData = JSON.parse(data);
+                    // call this whatever you want - libraryData
+                    res.send(JSON.stringify({msg: "SUCCESS", libraryData: libraryData}));
+                }
+            });
+        } else {
+            var data = [];
+            res.send(JSON.stringify({msg: "SUCCESS", libraryData: data}));
         }
     });
 };
