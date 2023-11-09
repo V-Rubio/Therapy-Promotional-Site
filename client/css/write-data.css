@@ -1,0 +1,67 @@
+body {
+    background-image: url("../images/trees.jpeg");
+  }
+
+h1 {
+    color:cornsilk;
+}
+
+a {
+    color: black;
+    font-weight: bold;
+    font-size:larger;
+    margin: 10px;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+p{
+  color: white;
+  font: size 16px;
+  text-align: center;
+}
+
+.container {
+    width: 400px;
+    height: 400px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+
+  .links {
+    width: auto;
+    text-align: center;
+    background-color: cornsilk ;
+  }
+
+  .button-container{
+    display: flex;
+    flex-direction: column;
+    clear: left;
+    float: left;
+    margin-left: 12%;
+}
+
+.config-buttons {
+    float: left;
+    width: 30%;
+    margin-right: 20px;
+    
+}
+
+.edit_btn {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  background-color: white;
+  color: black;
+  padding: 15px, 32px;
+  font-size: 16px;
+  border-radius: 10px;
+}

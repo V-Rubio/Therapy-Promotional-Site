@@ -10,4 +10,32 @@ Link
     - View Data 
     - Browse Data 
 
-    
+
+AJAX
+
+does it create a file 
+send it to a server 
+write data so it ends up in that text file 
+
+
+testing new branch 
+
+
+-----------------------------------------------------------------------
+node server/app.js 
+Ctrl + C to stop server 
+
+test in terminal - node server/app.js (sitting in route terminal)
+    control + C (cut/end server)
+
+    browser - http://localhost:4000/
+
+-----------------------------------------------------------------------
+node modules deleted 
+    npm install 
+
+
+
+[{"id":"lib1699488578593","name":"Testing Data","description":"Descr","rating":"1","suggestion":"Suggestions","location":"LocationTest"},{"id":"lib1699489504864","name":"Testing Data","description":"Descr","rating":"1","suggestion":"Suggestions","location":"LocationTest"},{"id":"lib1699489713233","name":"Testing Data","description":"Descr","rating":"1","suggestion":"Suggestions","location":"LocationTest"},{"id":"lib1699489777095","name":"Testing Data","description":"","rating":"","suggestion":"","location":""}]
+
+

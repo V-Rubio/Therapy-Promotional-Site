@@ -1,0 +1,1 @@
+var therapyURL = 'http://localhost:4000';
