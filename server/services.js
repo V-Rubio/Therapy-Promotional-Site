@@ -32,12 +32,14 @@ var services = function(app) {
 
                     libraryData.push(bookData);
 
-                    console.log(JSON.stringify(libraryData));
-                    fs.writeFile(DATABASE_FILE, JSON.stringify(libraryData), function (err, res){
+                    // console.log(JSON.stringify(libraryData));
+
+                    // not res should be data 
+                    fs.writeFile(DATABASE_FILE, JSON.stringify(libraryData), function (err){
                         if(err){
                             res.send(JSON.stringify({msg:err}));
                         } else {
-                            console.log("Will I cause Issues: services.js:41")
+                            // console.log("Will I cause Issues: check services.js:41")
                             res.send(JSON.stringify({msg: "SUCCESS"}));
                         }
                     });
@@ -74,6 +76,61 @@ var services = function(app) {
             res.send(JSON.stringify({msg: "SUCCESS", libraryData: data}));
         }
     });
+
+    app.delete("/delete-record", function(req, res){
+        // delete in body 
+        //read file/ json parse into object, array of data, loop, find that id, take it out of array, json stringify array and send it back to the file and send it back to the client 
+        // ellement out of the array splice 
+        // get id
+        // send the array back with the same write file above 
+
+        var libraryData = []; 
+        var reqID = req.body.deleteID;
+        console.log("REQUEST ID IS: "+reqID);
+
+        // node is async, this one is synch
+        if(fs.existsSync(DATABASE_FILE)){
+            fs.readFile(DATABASE_FILE, "utf-8", function(err, data){
+                if(err){
+                    res.send(JSON.stringify({msg: err}));
+                } else {
+                    // console.log("Data: " + JSON.stringify(bookData))
+                    libraryData = JSON.parse(data);
+                    var currentID;
+                    var found = false; 
+
+                    for(var i = 0; i < libraryData.length; i++){
+                        currentID = libraryData[i].id;
+                        if (currentID === reqID){
+                            found = true;
+                            libraryData.splice(i,1);
+                            // find id and remove record from an array
+                            break;
+                        } 
+                    }
+                    
+
+                    // console.log(JSON.stringify(libraryData));
+
+                    // not res should be data 
+                    fs.writeFile(DATABASE_FILE, JSON.stringify(libraryData), function (err){
+                        if(err){
+                            res.send(JSON.stringify({msg:err}));
+                        } else {
+                            // console.log("Will I cause Issues: check services.js:41")
+                            res.send(JSON.stringify({msg: "SUCCESS"}));
+                        }
+                    });
+                }
+            })
+        } else {
+
+            // dont have to read anything because nothing currently exists
+
+            alert("ERROR: No File Exists: 404 NOT FOUND");
+        }
+    });
+
 };
 
 module.exports = services;
