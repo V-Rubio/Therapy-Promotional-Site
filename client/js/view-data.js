@@ -73,9 +73,60 @@ function showTable(jsonObject) {
             htmlString += "<td>" + jsonObject[i].rating + "</td>";
             htmlString += "<td>" + jsonObject[i].suggestion + "</td>";
             htmlString += "<td>" + jsonObject[i].location + "</td>";
+            htmlString += "<td> <button class='delete-button' data-id='" + jsonObject[i].id+ "'> Delete </button> </td>";
         htmlString += "</tr>";
     }
 
     //REMEMBER THE HASHTAG - to wipe out the table instead of append which just adds a row 
     $("#reviewTable").html(htmlString);
+    activateDelete();
+
 }
+
+      // $(".delete").click(function() {
+      //   alert("Button Clicked");
+      //   // var name = $(this).attr("name");
+      //   // alert("delete "+ name);
+      // });
+
+// CANT PPUT A LISTENER ON AN OBKECT THAT DOES NOT EXIST, NEED A FUNCTION CALL AFTER THE TABLE CREATED TO ACTIVATE LISTENER 
+      // $('.deleteVD').click(function(){
+      //   // $(this).parent().parent().remove(); //Deleting the Row (tr) Element
+      //   console.log("Button Clicked");
+      //   alert(JSON.stringify("Button Clicked!"));
+      // });
+
+function activateDelete(){
+  $('.delete-button').click(function(){
+    var deleteID = this.getAttribute("data-id");
+
+    $.ajax({
+      url: therapyURL + "/delete-record", 
+      type: "delete", 
+      data: {deleteID: deleteID}, 
+      success: function(response){
+        if(response = "SUCCESS"){
+          retrieveData();
+
+        }else {
+          alert(response);
+        }
+      }, 
+      error: function(err){
+        alert("Success Error: "+ err);
+      }
+    })
+  })
+}
+
+// $("#delete").click(function(){
+
+
+//   // $("#name").val("");
+//   // $("#description").val("");
+//   // $("#rating").val("");
+//   // $("#suggestion").val("");
+//   // $("#location").val("");
+// });
+
+// $(this).closest("tr").remove();

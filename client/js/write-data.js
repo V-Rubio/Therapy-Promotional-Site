@@ -1,15 +1,62 @@
+var app = angular.module('addReviewsApp', []);
+
+app.controller('addReviewsCtrl', function ($scope, $http){
+    $scope.addResults = ""; 
+
+    $scope.submitReview = function () {
+        if($scope.name === "" || $scope.description === "" || $scope.rating === ""){
+            $scope.addResults = "Name, Description, and Rating are required!"
+            return;
+        } 
+
+        $http({
+            method: "post", 
+            url: therapyURL + "/write-record", 
+            data: {
+                "name": $scope.name, 
+                "description": $scope.description,
+                "rating": $scope.rating, 
+                "suggestion": $scope.suggestion, 
+                "location": $scope.location
+            }
+        }).then(function(response){
+            if(response.data.msg === "SUCCESS"){
+                // data is from angular, msg is from us
+                $scope.addResults = "Review is added!";
+                $scope.name = ""; 
+                $scope.description = "";
+                $scope.rating = ""; 
+                $scope.suggestion = "";
+                $scope.location = "";
+            }else {
+                $scope.addResults = response.data.msg;
+            }
+        }, function(response){
+            // ERROR FUNCTION
+            console.log(response);
+            alert("CANT CONNECT TO SERVER" + response);
+        })
+
+        $scope.startNew = function (){
+            $scope.addResults = "";
+        }
+    }
+});
+
+
+
 //dont need to import config, script url it in HTML
 
 //CREATING THE LISTENER - to add new object 
-$("#clearInput").click(function(){
-        $("#name").val("");
-        $("#description").val("");
-        $("#rating").val("");
-        $("#suggestion").val("");
-        $("#location").val("");
-});
+    // $("#clearInput").click(function(){
+    //         $("#name").val("");
+    //         $("#description").val("");
+    //         $("#rating").val("");
+    //         $("#suggestion").val("");
+    //         $("#location").val("");
+    // });
 
-$('#submit').click(function() {
+// $('#submit').click(function() {
     // var name = $('#name').val(); 
     // var description = $('#description').val();
     // var rating = $('#rating').val();
@@ -23,13 +70,13 @@ $('#submit').click(function() {
     //     suggestion: suggestion, 
     //     location: location
     // };
-    var review = {
-        name: $('#name').val(), 
-        description: $('#description').val(), 
-        rating: $('#rating').val(), 
-        suggestion: $('#suggestion').val(), 
-        location: $('#location').val()
-    };
+            // var review = {
+            //     name: $('#name').val(), 
+            //     description: $('#description').val(), 
+            //     rating: $('#rating').val(), 
+            //     suggestion: $('#suggestion').val(), 
+            //     location: $('#location').val()
+            // };
 
     
 
@@ -51,23 +98,23 @@ $('#submit').click(function() {
     // return false;
     /* Dont do anything else that you would normally do*/
 
-    $.ajax({
-        url: therapyURL + "/write-record", 
-        type: "post", 
-        data: review, 
-        success: function(response){
-            var data = JSON.parse(response);
-            if(data.msg=="SUCCESS"){
-                alert("Data Successfully Saved");
-            } else {
-                console.log(data.msg);
-            }
-        }, 
-        error: function(err){
-            console.log(err);
-        }
-    });
-});
+//     $.ajax({
+//         url: therapyURL + "/write-record", 
+//         type: "post", 
+//         data: review, 
+//         success: function(response){
+//             var data = JSON.parse(response);
+//             if(data.msg=="SUCCESS"){
+//                 alert("Data Successfully Saved");
+//             } else {
+//                 console.log(data.msg);
+//             }
+//         }, 
+//         error: function(err){
+//             console.log(err);
+//         }
+//     });
+// });
 
 //OLD SUBMIT BUTTON
 // $("#submitInput").click(function(){

@@ -7,11 +7,13 @@
 
         <!-- You need this link, otherwise alert won't work -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
-        <script src="/client/js/write-data.js" async> </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
         <script src="/client/js/config.js"> </script>
+        <script src="/client/js/write-data.js" async> </script>
+        
     </head>
 
-    <body>
+    <body data-ng-app="addReviewsApp" data-ng-controller="addReviewsCtrl" data-ng-init="addResults=' '">
         <div class="links">
             <a href="/home">Home</a>
             <a href="/write-data">Leave a Review</a>
@@ -27,23 +29,23 @@
         <form>
             <div class=""> 
                 <label class="" for="name" >Name</label>
-                <input class="" name="name" id="name">
+                <input type="text" class="" name="name" id="name" data-ng-model="name" data-ng-change=startNew()>
             </div>
             <div class=""> 
                 <label class="" for="description" >Description</label>
-                <input class="" name="description" id="description">
+                <input type="text" class="" name="description" id="description" data-ng-model="description" data-ng-change=startNew()>
             </div>
             <div class=""> 
                 <label class="" for="rating" >Rating</label>
-                <input class="" name="rating" id="rating">
+                <input type="text" class="" name="rating" id="rating" data-ng-model="rating" data-ng-change=startNew()>
             </div>
             <div class=""> 
                 <label class="" for="suggestion" >Suggestions</label>
-                <input class="" name="suggestion" id="suggestion">
+                <input type="text" class="" name="suggestion" id="suggestion" data-ng-model="suggestion" data-ng-change=startNew()>
             </div>
             <div class=""> 
                 <label class="" for="location" >Location</label>
-                <input class="" name="location" id="location">
+                <input type="text" class="" name="location" id="location" data-ng-model="location" data-ng-change=startNew()>
             </div>
 
 
@@ -51,12 +53,17 @@
 
                 <div class="button-container">
                     <div class="config-buttons">
-                        <div id="submit" class="edit_btn"> Submit</div>
+                        <div id="submit" class="edit_btn"  data-ng-click="submitReview()"> Submit</div>
                     </div>  
 
                     <div id="clearInput"> 
                         Clear
                     </div >
+
+                    <div style="float: left; clear: left; margin-top: 20px; font-weight: 600; font-size: 24px; color: black;">
+                        {{addResults}}
+                      </div>
+
                 </div>
 
                 
