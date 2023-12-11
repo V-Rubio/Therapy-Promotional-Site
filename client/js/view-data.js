@@ -48,11 +48,15 @@ function retrieveData (){
     url: therapyURL + "/get-records", 
     type: "get", 
     success: function(response){
+      console.log(response)
+      // console.log(msg)
       var data = JSON.parse(response);
+      console.log(data)
       if(data.msg == "SUCCESS"){
-        showTable(data.libraryData);
+        showTable(data.data);
       } else {
-        console.log(msg);
+        console.log("The else statement")
+        console.log(response.msg);
       }
     }, 
     // error cant talk to the server because crash

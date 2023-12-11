@@ -18,6 +18,11 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
     // extended should be false so we get it short and simple 
 
 app.use("/client", express.static(path.resolve(__dirname+"/../client/")));
