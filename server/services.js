@@ -166,8 +166,7 @@ var services = function(app) {
         // send the array back with the same write file above 
 
         var libraryData = []; 
-        var reqID = req.body.deleteID;
-
+        var reqID = req.query.id;
         try{
           await collection.deleteOne({_id: reqID});
           res.send(JSON.stringify({msg: "SUCCESS"}));
@@ -217,6 +216,51 @@ var services = function(app) {
     //         alert("ERROR: No File Exists: 404 NOT FOUND");
     //     }
     });
+
+
+    app.put("/update-review", function (req, res) {
+      //update data that already exists 
+      var reviewID = req.body.ID;
+      var name = req.body.name; 
+      var description = req.body.description; 
+      var suggestion = req.body.suggestion; 
+      var rating = req.body.rating;
+      var location = req.body.location;
+  
+      var r_id = new ObjectId(reviewID);
+  
+      var search = {_id: r_id}; 
+  
+      var updateData = {
+          $set: {
+              name: name, 
+              description: description, 
+              suggestion: suggestion, 
+              rating: rating, 
+              location, location
+          }
+      }
+  
+      MongoClient.connect(
+          dbURL,
+          { useUnifiedTopology: true },
+          function (err, client) {
+            if (err) {
+              return res.status(201).send(JSON.stringify({ msg: err }));
+            } else {
+              var dbo = client.db("Therapy-Site");
+    
+              dbo.collection("reviews").updateOne(search, updateData, function(err){
+                  if (err) {
+                      return res.status(201).send(JSON.stringify({ msg: err }));
+                    } else {
+                      return res.status(200).send(JSON.stringify({ msg: "SUCCESS"}));
+                    }
+                });
+            }
+          }
+        );
+        });
 
 };
 
