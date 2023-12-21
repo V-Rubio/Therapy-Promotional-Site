@@ -4,7 +4,7 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 const mongoose = require("mongoose");
 
-// var dbURL = "mongodb://localhost:27017";
+var dbURL = "mongodb://localhost:27017";
 // const client = new MongoClient(dbURL);
 
 
@@ -241,25 +241,23 @@ var services = function(app) {
           }
       }
   
-      MongoClient.connect(
-          dbURL,
-          { useUnifiedTopology: true },
-          function (err, client) {
-            if (err) {
-              return res.status(201).send(JSON.stringify({ msg: err }));
-            } else {
-              var dbo = client.db("Therapy-Site");
-    
-              dbo.collection("reviews").updateOne(search, updateData, function(err){
-                  if (err) {
-                      return res.status(201).send(JSON.stringify({ msg: err }));
-                    } else {
-                      return res.status(200).send(JSON.stringify({ msg: "SUCCESS"}));
-                    }
-                });
-            }
-          }
-        );
+      
+      try{
+        console.log("Here");
+        const check = collection.updateOne(search, updateData); 
+        console.log(check)
+
+        if(check){
+          return res.status(200).send(JSON.stringify({ msg: "SUCCESS"}));
+        } else {
+          console.log("Error Services 252");
+        }
+        
+        
+      } catch(e){
+        return res.status(201).send(JSON.stringify({ msg: result }));
+      }
+               
         });
 
 };

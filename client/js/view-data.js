@@ -85,6 +85,23 @@ $scope.showTable = function(jsonObject) {
 
 }
 
+$scope.editReview = function(reviewNumber){
+  $scope.name = $scope.reviews[reviewNumber].name;
+  $scope.description = $scope.reviews[reviewNumber].description;
+  $scope.suggestion = $scope.reviews[reviewNumber].suggestion;
+  $scope.rating = $scope.reviews[reviewNumber].rating;
+  $scope.location = $scope.reviews[reviewNumber].location;
+  $scope.reviewID = $scope.reviews[reviewNumber]['_id'];
+
+  $scope.hideTable = true; 
+  $scope.hideForm = false; 
+}
+
+$scope.cancelUpdate = function(){
+  $scope.hideTable = false; 
+  $scope.hideForm = true; 
+}
+
 $scope.updateReview = function(){
   if($scope.name === "" || $scope.description === "" || $scope.rating === ""){
       $scope.addResults = "Name, Description, and Rating are required!"
@@ -101,7 +118,7 @@ $scope.updateReview = function(){
 
   $http({
       method: "put", 
-      url: potterURL + '/update-spell', 
+      url: therapyURL + '/update-review', 
       data: {
         'ID': $scope.reviewID, 
         'name': $scope.name, 
@@ -113,7 +130,7 @@ $scope.updateReview = function(){
   }). then(function(response){
       console.log(response);
       if (response.data.msg === "SUCCESS"){
-          // $scope.cancelUpdate();
+          $scope.cancelUpdate();
 
           $scope.retrieveData();
 
