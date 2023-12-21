@@ -249,19 +249,19 @@ var services = function (app) {
 
   app.get("/get-reviewsByType", async function (req, res) {
     var reviewType = req.query.name;
-    console.log(reviewType);
 
     var search = reviewType === "" ? {} : { name: reviewType };
 
-    await collection.find(search).toArray(function (err, data) {
-      if (err) {
-        return res.status(201).send(JSON.stringify({ msg: err }));
-      } else {
-        return res
+    try{
+      var data = await collection.find(search);
+      res
           .status(200)
           .send(JSON.stringify({ msg: "SUCCESS", reviews: data }));
-      }
-    });
+    }
+    catch(err){
+      return res.status(201).send(JSON.stringify({ msg: err }));
+    }
+    
   });
 };
 
