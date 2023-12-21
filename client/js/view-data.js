@@ -38,6 +38,7 @@ var app = angular.module('viewReviewsApp', []);
 app.controller('viewReviewsCtrl', function($scope, $http){
     $scope.obj = {}; 
     $scope.reviews = [];
+    $scope.names = [];
     
 
 $scope.retrieveData = function(){ 
@@ -52,6 +53,8 @@ $scope.retrieveData = function(){
         // $scope.showTable(response.data.data);
         // window.location.reload();
         $scope.reviews = response.data.data; 
+        $scope.names = getTypes($scope.reviews);
+        $scope.selectedType = $scope.reviews[0].name;
       } else {
         console.log("The else statement")
         console.log(response.msg);
@@ -179,7 +182,30 @@ $scope.updateReview = function(){
     }, function(err){
       alert("Error: " + JSON.stringify(err));
     }
+
+    $scope.redrawTable = function(){
+      console.log("REDRAW TABLE")
+      var name = $scope.selectedType.value;
+      console.log(name);
+
+      $http({
+          method: 'get', 
+          url: therapyURL + '/get-reviewsByType', 
+          params: {name: name}
+      }).then(function(response){
+          if(response.data.msg === "SUCCESS"){
+              $scope.reviews = response.data.reviews;
+          }
+      }, function(response){
+          console.log(JSON.stringify(response));
+      });
+  }
+
+
+
 $scope.retrieveData();
+
+
 });
 // $("#delete").click(function(){
 
@@ -192,3 +218,25 @@ $scope.retrieveData();
 // });
 
 // $(this).closest("tr").remove();
+
+function getTypes(reviewsTableData){
+  var typesExists; 
+  var length = reviewsTableData.length;
+  
+
+  typesArray = [{value:"", display: "ALL"}];
+
+  for(var i=0; i<length; i++){
+      typesExists = typesArray.find(function(element){
+          return element.value === reviewsTableData[i].name;
+      });
+
+      if(typesExists){
+          continue;
+      } else {
+          typesArray.push({value: reviewsTableData[i].name, display: reviewsTableData[i].name.toUpperCase()});
+      }
+  }
+
+  return typesArray;
+}

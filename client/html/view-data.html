@@ -28,7 +28,7 @@
             <label for="groupby">Name:</label>
             <select id="groupby"
               data-ng-model="selectedType"
-              data-ng-options="type.display for type in types"
+              data-ng-options="name.display for name in names"
               data-ng-change="redrawTable()"
               >
                 
