@@ -37,7 +37,7 @@ const connection = mongoose.createConnection(
     },
   });
   
-  var collection = connection.model("Reviews", newSchema);
+  var collection = connection.model("reviews", newSchema);
   
   module.exports = collection;
   
@@ -132,17 +132,13 @@ var services = function(app) {
         // }
     });
 
-    app.get("/get-records", function(req, res){
-        console.log("TOP")
-
+    app.get("/get-records", async function(req, res){
         try {
-            const data = collection().find({});
-            console.log(data);
+            const data = await collection.find();
             // const cursor = db.collection('inventory').find({});
         
             res.send(JSON.stringify({msg: "SUCCESS", data: data}));
           } catch (e) {
-            console.log("Catched")
             res.send(JSON.stringify({msg: e}));
           }
 
@@ -162,7 +158,7 @@ var services = function(app) {
         // }
     });
 
-    app.delete("/delete-record", function(req, res){
+    app.delete("/delete-record", async function(req, res){
         // delete in body 
         //read file/ json parse into object, array of data, loop, find that id, take it out of array, json stringify array and send it back to the file and send it back to the client 
         // ellement out of the array splice 
@@ -171,49 +167,55 @@ var services = function(app) {
 
         var libraryData = []; 
         var reqID = req.body.deleteID;
-        console.log("REQUEST ID IS: "+reqID);
+
+        try{
+          await collection.deleteOne({_id: reqID});
+          res.send(JSON.stringify({msg: "SUCCESS"}));
+        }catch(e){
+          res.send(JSON.stringify({msg: e}));
+        }
 
         // node is async, this one is synch
-        if(fs.existsSync(DATABASE_FILE)){
-            fs.readFile(DATABASE_FILE, "utf-8", function(err, data){
-                if(err){
-                    res.send(JSON.stringify({msg: err}));
-                } else {
-                    // console.log("Data: " + JSON.stringify(bookData))
-                    libraryData = JSON.parse(data);
-                    var currentID;
-                    var found = false; 
+    //     if(fs.existsSync(DATABASE_FILE)){
+    //         fs.readFile(DATABASE_FILE, "utf-8", function(err, data){
+    //             if(err){
+    //                 res.send(JSON.stringify({msg: err}));
+    //             } else {
+    //                 // console.log("Data: " + JSON.stringify(bookData))
+    //                 libraryData = JSON.parse(data);
+    //                 var currentID;
+    //                 var found = false; 
 
-                    for(var i = 0; i < libraryData.length; i++){
-                        currentID = libraryData[i].id;
-                        if (currentID === reqID){
-                            found = true;
-                            libraryData.splice(i,1);
-                            // find id and remove record from an array
-                            break;
-                        } 
-                    }
+    //                 for(var i = 0; i < libraryData.length; i++){
+    //                     currentID = libraryData[i].id;
+    //                     if (currentID === reqID){
+    //                         found = true;
+    //                         libraryData.splice(i,1);
+    //                         // find id and remove record from an array
+    //                         break;
+    //                     } 
+    //                 }
                     
 
-                    // console.log(JSON.stringify(libraryData));
+    //                 // console.log(JSON.stringify(libraryData));
 
-                    // not res should be data 
-                    fs.writeFile(DATABASE_FILE, JSON.stringify(libraryData), function (err){
-                        if(err){
-                            res.send(JSON.stringify({msg:err}));
-                        } else {
-                            // console.log("Will I cause Issues: check services.js:41")
-                            res.send(JSON.stringify({msg: "SUCCESS"}));
-                        }
-                    });
-                }
-            })
-        } else {
+    //                 // not res should be data 
+    //                 fs.writeFile(DATABASE_FILE, JSON.stringify(libraryData), function (err){
+    //                     if(err){
+    //                         res.send(JSON.stringify({msg:err}));
+    //                     } else {
+    //                         // console.log("Will I cause Issues: check services.js:41")
+    //                         res.send(JSON.stringify({msg: "SUCCESS"}));
+    //                     }
+    //                 });
+    //             }
+    //         })
+    //     } else {
 
-            // dont have to read anything because nothing currently exists
+    //         // dont have to read anything because nothing currently exists
 
-            alert("ERROR: No File Exists: 404 NOT FOUND");
-        }
+    //         alert("ERROR: No File Exists: 404 NOT FOUND");
+    //     }
     });
 
 };
