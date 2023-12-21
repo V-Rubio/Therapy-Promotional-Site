@@ -37,6 +37,7 @@
 var app = angular.module('viewReviewsApp', []);
 app.controller('viewReviewsCtrl', function($scope, $http){
     $scope.obj = {}; 
+    $scope.reviews = [];
     
 
 $scope.retrieveData = function(){ 
@@ -48,7 +49,9 @@ $scope.retrieveData = function(){
       // var data = JSON.parse(response.data.data);
       // console.log(data.data)
       if(response.data.msg == "SUCCESS"){
-        $scope.showTable(response.data.data);
+        // $scope.showTable(response.data.data);
+        // window.location.reload();
+        $scope.reviews = response.data.data; 
       } else {
         console.log("The else statement")
         console.log(response.msg);
@@ -62,7 +65,7 @@ $scope.retrieveData = function(){
 
 // sending and recieving 
 $scope.showTable = function(jsonObject) {
-    var htmlString = "";
+    var htmlString ='';
 
     for (var i = 0; i<jsonObject.length; i++){
         htmlString += "<tr>";
@@ -76,8 +79,54 @@ $scope.showTable = function(jsonObject) {
     }
 
     //REMEMBER THE HASHTAG - to wipe out the table instead of append which just adds a row 
-    $scope.("#reviewTable").html(htmlString);
+    // $("#reviewTable").html(htmlString);
+    $scope.htmlString;
     // $scope.activateDelete();
+
+}
+
+$scope.updateReview = function(){
+  if($scope.name === "" || $scope.description === "" || $scope.rating === ""){
+      $scope.addResults = "Name, Description, and Rating are required!"
+      return;
+  } 
+  console.log({
+      'ID': $scope.reviewID, 
+      'name': $scope.name, 
+      'description': $scope.description, 
+      'suggestion': $scope.suggestion, 
+      'rating': $scope.rating,
+      'location': $scope.location
+  })
+
+  $http({
+      method: "put", 
+      url: potterURL + '/update-spell', 
+      data: {
+        'ID': $scope.reviewID, 
+        'name': $scope.name, 
+        'description': $scope.description, 
+        'suggestion': $scope.suggestion, 
+        'rating': $scope.rating,
+        'location': $scope.location
+      }
+  }). then(function(response){
+      console.log(response);
+      if (response.data.msg === "SUCCESS"){
+          // $scope.cancelUpdate();
+
+          $scope.retrieveData();
+
+          $scope.name = "";
+          $scope.description = "";
+          $scope.suggestion = "";
+          $scope.rating = "";
+          $scope.location = "";
+
+      }
+  }, function(response){
+      console.log(JSON.stringify(response));
+  })
 
 }
 
@@ -95,18 +144,16 @@ $scope.showTable = function(jsonObject) {
       // });
 
       // $scope.activateDelete = function(){
-  $scope.deleteReview = function(){
-    console.log("inside delete review")
-    var deleteID = this.getAttribute("data-id");
-    console.log(deleteID);
+  $scope.deleteReview = function(reviewID){
 
     $http({
       method: "delete",
       url: therapyURL + "/delete-record",  
-      data: {deleteID: deleteID}, 
+      params: {id: reviewID} 
     }).then(function(response){
         if(response = "SUCCESS"){
           $scope.retrieveData();
+          window.location.reload();
 
         }else {
           alert(response);
