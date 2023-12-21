@@ -34,40 +34,34 @@
 
 // var jsonObject = JSON.parse(data);
 
-main();
+var app = angular.module('viewReviewsApp', []);
+app.controller('viewReviewsCtrl', function($scope, $http){
+    $scope.obj = {}; 
+    
 
-function main() {
-
-    // showTable();
-    retrieveData();
-}
-
-function retrieveData (){ 
+$scope.retrieveData = function(){ 
   //ajax to get the data from the server 
-  $.ajax({
-    url: therapyURL + "/get-records", 
-    type: "get", 
-    success: function(response){
-      console.log(response)
-      // console.log(msg)
-      var data = JSON.parse(response);
-      console.log(data)
-      if(data.msg == "SUCCESS"){
-        showTable(data.data);
+  $http({
+    method: 'get', 
+    url: therapyURL + "/get-records" 
+  }).then(function(response){
+      // var data = JSON.parse(response.data.data);
+      // console.log(data.data)
+      if(response.data.msg == "SUCCESS"){
+        $scope.showTable(response.data.data);
       } else {
         console.log("The else statement")
         console.log(response.msg);
       }
-    }, 
+    },function(e){
     // error cant talk to the server because crash
-    error: function(err){
-      console.log(err);
-    }
-  });
+      console.log("Cannot Get Records");
+      console.log(JSON.stringify(e));
+    });
 }
 
 // sending and recieving 
-function showTable(jsonObject) {
+$scope.showTable = function(jsonObject) {
     var htmlString = "";
 
     for (var i = 0; i<jsonObject.length; i++){
@@ -77,13 +71,13 @@ function showTable(jsonObject) {
             htmlString += "<td>" + jsonObject[i].rating + "</td>";
             htmlString += "<td>" + jsonObject[i].suggestion + "</td>";
             htmlString += "<td>" + jsonObject[i].location + "</td>";
-            htmlString += "<td> <button class='delete-button' data-id='" + jsonObject[i].id+ "'> Delete </button> </td>";
+            htmlString += "<td> <button class='delete-button' data-ng-click='deleteReview()' data-id='" + jsonObject[i]._id+ "'> Delete </button> </td>";
         htmlString += "</tr>";
     }
 
     //REMEMBER THE HASHTAG - to wipe out the table instead of append which just adds a row 
-    $("#reviewTable").html(htmlString);
-    activateDelete();
+    $scope.("#reviewTable").html(htmlString);
+    // $scope.activateDelete();
 
 }
 
@@ -100,29 +94,29 @@ function showTable(jsonObject) {
       //   alert(JSON.stringify("Button Clicked!"));
       // });
 
-function activateDelete(){
-  $('.delete-button').click(function(){
+      // $scope.activateDelete = function(){
+  $scope.deleteReview = function(){
+    console.log("inside delete review")
     var deleteID = this.getAttribute("data-id");
+    console.log(deleteID);
 
-    $.ajax({
-      url: therapyURL + "/delete-record", 
-      type: "delete", 
+    $http({
+      method: "delete",
+      url: therapyURL + "/delete-record",  
       data: {deleteID: deleteID}, 
-      success: function(response){
+    }).then(function(response){
         if(response = "SUCCESS"){
-          retrieveData();
+          $scope.retrieveData();
 
         }else {
           alert(response);
         }
-      }, 
-      error: function(err){
-        alert("Success Error: "+ err);
-      }
-    })
-  })
-}
-
+      })
+    }, function(err){
+      alert("Error: " + JSON.stringify(err));
+    }
+$scope.retrieveData();
+});
 // $("#delete").click(function(){
 
 
