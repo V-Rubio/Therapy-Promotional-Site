@@ -218,7 +218,7 @@ var services = function(app) {
     });
 
 
-    app.put("/update-review", function (req, res) {
+    app.put("/update-review", async function (req, res) {
       //update data that already exists 
       var reviewID = req.body.ID;
       var name = req.body.name; 
@@ -232,20 +232,17 @@ var services = function(app) {
       var search = {_id: r_id}; 
   
       var updateData = {
-          $set: {
               name: name, 
               description: description, 
               suggestion: suggestion, 
               rating: rating, 
               location, location
-          }
       }
   
       
       try{
         console.log("Here");
-        const check = collection.updateOne(search, updateData); 
-        console.log(check)
+        const check = await collection.findOneAndUpdate(search, updateData); 
 
         if(check){
           return res.status(200).send(JSON.stringify({ msg: "SUCCESS"}));
